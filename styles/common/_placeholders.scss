@@ -1,6 +1,11 @@
 @charset "UTF-8";
 @import './variables';
 
+/* Show animation */
+.show {
+  animation: ShowAnimation 0.2s ease-in;
+}
+
 /* Card */
 .grayBox {
   background-color: $G-background-color-gray;
@@ -62,6 +67,20 @@
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  &:active {
+    background-color: rgba(0, 0, 0, 0.01);
+  }
+}
+
+.whiteButton {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  transition: background-color 0.16s ease-in;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.15);
   }
 
   &:active {

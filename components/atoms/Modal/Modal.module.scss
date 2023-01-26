@@ -1,0 +1,55 @@
+@charset "UTF-8";
+@import "styles/common/_variables.scss";
+@import "styles/common/_placeholders.scss";
+
+.background {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 99;
+  animation: BackgroundLayerAnimation 0.4s ease-in;
+
+  .wrapper {
+    @extend .grayBox;
+
+    display: flex;
+    flex-direction: column;
+    width: 460px;
+    border-radius: 4px;
+    margin-bottom: 100px;
+    animation: ModalAnimation 0.5s ease;
+
+    .header {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: 60px;
+      border-bottom: 1px solid $G-color-border;
+
+      h1 {
+        font-size: 16px;
+        width: 100%;
+        padding: 0 20px;
+      }
+
+      & > button {
+        width: 60px;
+        height: 60px;
+        padding: 1rem;
+        margin-left: auto;
+        opacity: 0.3;
+        transition: opacity 0.16s ease-in;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}

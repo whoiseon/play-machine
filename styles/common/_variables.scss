@@ -29,3 +29,42 @@ $G-background-color-extra: #1E2124;
 
 /* Box Shadow */
 $G-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+
+/* Show Animation keyframes */
+
+@keyframes ShowAnimation {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes BackgroundLayerAnimation {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 100%;
+  }
+}
+
+@keyframes ModalAnimation {
+  0% {
+    transform: scale(0);
+  }
+
+  60% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+

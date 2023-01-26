@@ -3,6 +3,7 @@
 @import "styles/common/_placeholders.scss";
 
 .wrapper {
+  @extend .show;
   @extend .grayBox;
   position: relative;
   display: flex;
