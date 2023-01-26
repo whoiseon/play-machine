@@ -5,12 +5,27 @@ $G-font-family-base: Pretendard, -apple-system, sans-serif;
 
 /* Color */
 $G-color-white: #FFFFFF;
+
 $G-color-gray: rgba(255, 255, 255, 0.3);
+
 $G-color-blue: #7289DA;
+$G-color-blue-hover: #93ABFF;
+$G-color-blue-active: #5F73B7;
+
 $G-color-green: #49A879;
+$G-color-green-hover: #5ACB93;
+$G-color-green-active: #3C8B64;
+
 $G-color-red: #C95A5D;
+$G-color-red-hover: #E56A6D;
+$G-color-red-active: #9D4447;
+
+$G-color-border: #474C50;
 
 /* Background Color */
 $G-background-color-default: #36393E;
 $G-background-color-gray: #414549;
 $G-background-color-extra: #1E2124;
+
+/* Box Shadow */
+$G-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);

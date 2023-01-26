@@ -1,0 +1,21 @@
+@charset "UTF-8";
+@import "styles/common/_variables.scss";
+@import "styles/common/_placeholders.scss";
+
+.header {
+  display: flex;
+  align-items: center;
+  width: 1280px;
+  height: 100px;
+  margin: 40px auto 0;
+}
+
+.wrapper {
+  min-width: 1280px;
+
+  .container {
+    display: flex;
+    margin: 0 auto;
+    width: 1280px;
+  }
+}

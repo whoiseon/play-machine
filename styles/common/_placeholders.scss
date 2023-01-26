@@ -14,6 +14,59 @@
   color: $G-color-white;
   font-weight: bold;
   transition: all 0.16s ease-in;
+
+  &:hover {
+    background-color: $G-color-blue-hover;
+  }
+
+  &:active {
+    background-color: $G-color-blue-active;
+  }
+}
+
+.greenButton {
+  background-color: $G-color-green;
+  color: $G-color-white;
+  font-weight: bold;
+  transition: all 0.16s ease-in;
+
+  &:hover {
+    background-color: $G-color-green-hover;
+  }
+
+  &:active {
+    background-color: $G-color-green-active;
+  }
+}
+
+.redButton {
+  background-color: $G-color-red;
+  color: $G-color-white;
+  font-weight: bold;
+  transition: all 0.16s ease-in;
+
+  &:hover {
+    background-color: $G-color-red-hover;
+  }
+
+  &:active {
+    background-color: $G-color-red-active;
+  }
+}
+
+.grayButton {
+  background-color: $G-background-color-gray;
+  border-radius: 4px;
+  box-shadow: $G-box-shadow;
+  transition: background-color 0.16s ease-in;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  &:active {
+    background-color: rgba(0, 0, 0, 0.01);
+  }
 }
 
 /* Input */

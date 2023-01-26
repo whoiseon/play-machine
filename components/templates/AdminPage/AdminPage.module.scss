@@ -1,0 +1,109 @@
+@charset "UTF-8";
+@import "styles/common/_variables.scss";
+@import "styles/common/_placeholders.scss";
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .addForm {
+    @extend .grayBox;
+
+    position: relative;
+    display: flex;
+    flex: 1 1;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+    height: 146px;
+
+    button {
+      @extend .blueButton;
+
+      width: 20%;
+      height: 100%;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    .inputWrapper {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 1rem;
+      margin-right: 2rem;
+      width: 80%;
+
+      .item {
+        position: relative;
+        overflow: hidden;
+
+        input, select {
+          @extend .defaultInput;
+
+          width: 100%;
+          height: 46px;
+          padding: 0 1rem 0 4rem;
+          font-size: 16px;
+          text-align: right;
+
+          &:nth-of-type(odd) {
+            margin-right: 1rem;
+          }
+        }
+
+        .inputLabel {
+          position: absolute;
+          top: 0;
+          left: 0;
+          padding: 1rem;
+          background-color: $G-background-color-extra;
+          font-size: 14px;
+          font-weight: 500;
+          color: $G-color-gray;
+          border-radius: 4px;
+        }
+
+        .price {
+          color: $G-color-blue;
+        }
+
+        .count {
+          color: $G-color-red;
+        }
+      }
+    }
+
+    @keyframes ErrorAnimation {
+      0% {
+        transform: scale(1);
+      }
+      40% {
+        transform: scale(1.2);
+      }
+      60% {
+        transform: scale(1);
+      }
+      80% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    
+    .error {
+      position: absolute;
+      top: -2rem;
+      right: 0;
+      color: $G-color-red;
+      animation: ErrorAnimation 0.4s ease-in;
+    }
+  }
+
+  .productList {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 1rem;
+  }
+}

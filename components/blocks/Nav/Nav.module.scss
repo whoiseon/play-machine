@@ -1,0 +1,124 @@
+@charset "UTF-8";
+@import "styles/common/_variables.scss";
+@import "styles/common/_placeholders.scss";
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-width: 300px;
+  margin-right: 2rem;
+
+  ul {
+    margin-top: 2rem;
+    background-color: $G-background-color-gray;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: $G-box-shadow;
+    width: 100%;
+
+    li {
+      display: flex;
+      align-items: center;
+      height: 60px;
+
+      div {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+        width: 100%;
+
+        .moneyInvested {
+          color: $G-color-blue;
+          font-size: 16px;
+          font-weight: bold;
+        }
+
+        .changes {
+          color: $G-color-red;
+          font-size: 16px;
+          font-weight: bold;
+        }
+      }
+
+      button {
+        @extend .blueButton;
+
+        min-width: 60px;
+        height: 100%;
+        margin-left: auto;
+      }
+
+      &:nth-of-type(2) {
+        div {
+          border-top: 1px solid $G-color-border;
+        }
+
+        button {
+          @extend .redButton;
+        }
+      }
+    }
+  }
+
+  .history {
+    @extend .grayButton;
+
+    width: 100%;
+    margin-top: 2rem;
+    padding: 20px 0;
+  }
+
+  .myInfo {
+    @extend .grayBox;
+    overflow: hidden;
+
+    .profile {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+
+      & > img {
+        margin-right: 1rem;
+      }
+
+      button {
+        margin-left: auto;
+        padding: 8px 0 6px;
+        width: 36px;
+        height: 36px;
+        opacity: 0.2;
+        transition: opacity 0.16s ease-in;
+
+        &:hover {
+          opacity: 0.5;
+        }
+
+        img {
+          padding-top: 1px;
+        }
+      }
+    }
+
+    .seedMoney {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      border-top: 1px solid $G-color-border;
+
+      .money {
+        margin-left: auto;
+        font-size: 16px;
+        color: $G-color-green;
+        font-weight: bold;
+      }
+    }
+
+    .calculate {
+      @extend .greenButton;
+
+      width: 100%;
+      padding: 20px 0;
+    }
+  }
+}

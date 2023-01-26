@@ -1,0 +1,15 @@
+@charset "UTF-8";
+@import "styles/common/_variables.scss";
+@import "styles/common/_placeholders.scss";
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .productList {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 1rem;
+  }
+}

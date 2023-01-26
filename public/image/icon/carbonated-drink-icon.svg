@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42">
+  <g id="coke-svgrepo-com" transform="translate(0.333 0.333)">
+    <g id="그룹_10" data-name="그룹 10" transform="translate(-0.333 -0.333)">
+      <g id="그룹_9" data-name="그룹 9">
+        <circle id="타원_3" data-name="타원 3" cx="21" cy="21" r="21" fill="#c95a5d"/>
+      </g>
+    </g>
+    <path id="패스_22" data-name="패스 22" d="M116.326,65.805,103.965,92.623l4.522,4.522q.756.057,1.526.057a20.169,20.169,0,0,0,20.016-17.7Z" transform="translate(-88.846 -55.869)" fill="#853e45"/>
+    <g id="그룹_11" data-name="그룹 11" transform="translate(11.084 4.006)">
+      <path id="패스_23" data-name="패스 23" d="M88.438,34.932a.474.474,0,0,1-.336-.139L83.76,30.451H79.475a.475.475,0,1,1,0-.951h4.678l4.621,4.621a.475.475,0,0,1-.336.811Z" transform="translate(-79 -29.5)" fill="#2a6179"/>
+    </g>
+    <g id="그룹_12" data-name="그룹 12" transform="translate(13.41 8.857)">
+      <path id="패스_24" data-name="패스 24" d="M109.579,65.869l-.792-1.8a.881.881,0,0,0-.792-.557H96.65a.882.882,0,0,0-.792.557l-.792,1.8Z" transform="translate(-95.066 -63.512)" fill="#d0d5d9"/>
+    </g>
+    <g id="그룹_13" data-name="그룹 13" transform="translate(13.41 34.495)">
+      <path id="패스_25" data-name="패스 25" d="M95.067,246.645l.792,1.8a.881.881,0,0,0,.792.557H108a.882.882,0,0,0,.792-.557l.792-1.8Z" transform="translate(-95.067 -246.645)" fill="#d0d5d9"/>
+    </g>
+    <g id="그룹_14" data-name="그룹 14" transform="translate(12.79 11.38)">
+      <path id="패스_26" data-name="패스 26" d="M91.247,102.215h14.259a.747.747,0,0,0,.747-.747V80.015a.747.747,0,0,0-.747-.747H91.247a.747.747,0,0,0-.747.747v21.453A.747.747,0,0,0,91.247,102.215Z" transform="translate(-90.5 -79.268)" fill="#7289da"/>
+    </g>
+    <g id="그룹_15" data-name="그룹 15" transform="translate(20.797 8.857)">
+      <path id="패스_27" data-name="패스 27" d="M155.108,64.068a.882.882,0,0,0-.792-.557h-5.65v2.357H155.9Z" transform="translate(-148.666 -63.511)" fill="#b3b7ba"/>
+    </g>
+    <g id="그룹_16" data-name="그룹 16" transform="translate(20.797 34.495)">
+      <path id="패스_28" data-name="패스 28" d="M148.667,246.646V249h5.65a.882.882,0,0,0,.792-.557l.792-1.8Z" transform="translate(-148.667 -246.646)" fill="#b3b7ba"/>
+    </g>
+    <g id="그룹_17" data-name="그룹 17" transform="translate(20.808 11.379)">
+      <path id="패스_29" data-name="패스 29" d="M155.774,79.267h-7.107v22.947h7.107a.747.747,0,0,0,.747-.747V80.014A.747.747,0,0,0,155.774,79.267Z" transform="translate(-148.667 -79.267)" fill="#5667a3"/>
+    </g>
+    <g id="그룹_18" data-name="그룹 18" transform="translate(17.256 19.037)">
+      <circle id="타원_4" data-name="타원 4" cx="3.411" cy="3.411" r="3.411" fill="#d0d5d9"/>
+    </g>
+    <g id="그룹_19" data-name="그룹 19" transform="translate(20.735 19.037)">
+      <path id="패스_30" data-name="패스 30" d="M152.055,139.541a3.411,3.411,0,0,0-3.388-3.411v6.821A3.411,3.411,0,0,0,152.055,139.541Z" transform="translate(-148.667 -136.13)" fill="#b3b7ba"/>
+    </g>
+  </g>
+</svg>

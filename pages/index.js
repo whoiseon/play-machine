@@ -1,19 +1,35 @@
-import {useCallback, useState} from "react";
+import {useState, useEffect} from "react";
 import Head from "next/head";
 
 import Root from "components/templates/Root";
 import Auth from "components/templates/Auth";
+import {useDispatch, useSelector} from "react-redux";
+import Layout from "../components/templates/Layout";
+import useLocalStorage from "../hooks/common/useLocalStorage";
+import PageLoading from "../components/atoms/PageLoading";
+import {updateUserInfo} from "../features/user/userSlice";
+import {loadProductsList} from "../features/product/productSlice";
 
 export default function Home() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const dispatch = useDispatch();
 
-  const handleUserDetect = useCallback(() => {
-    if (isLoggedIn) {
-      return <Root />
-    } else {
-      return <Auth />
+  const { userInfo } = useSelector((state) => state.user);
+
+  const [init, setInit] = useState(false);
+  const [loggingUser, setLoggingUser] = useLocalStorage('loggingUser', null);
+  const [productStore, setProductStore] = useLocalStorage('productStore', null);
+
+  useEffect(() => {
+    if (loggingUser) {
+      dispatch(updateUserInfo());
     }
-  }, [isLoggedIn]);
+
+    if (productStore) {
+      dispatch(loadProductsList());
+    }
+
+    setInit(true);
+  }, [loggingUser, productStore, updateUserInfo]);
 
   return (
     <>
@@ -22,7 +38,15 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {
-        handleUserDetect()
+        init
+          ? userInfo
+            ? (
+              <Layout>
+                <Root />
+              </Layout>
+            )
+            : <Auth />
+          : <PageLoading />
       }
     </>
   )
