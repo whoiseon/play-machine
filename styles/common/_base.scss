@@ -1,0 +1,64 @@
+@charset "UTF-8";
+@import "_variables.scss";
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  font-family: $G-font-family-base;
+  font-size: 14px;
+  background-color: $G-background-color-default;
+  color: $G-color-white;
+}
+
+#__next {
+  display: inline-block;
+  min-width: 100%;
+  height: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul, li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+h1, h2, h3, h4, h5, h6, p, span, a, table {
+  margin: 0;
+  padding: 0
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+
+input, select {
+  -webkit-appearance:none;
+  -moz-appearance:none;
+  appearance:none;
+  border: none;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+}

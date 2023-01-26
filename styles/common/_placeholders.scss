@@ -1,0 +1,24 @@
+@charset "UTF-8";
+@import './variables';
+
+/* Card */
+.grayBox {
+  background-color: $G-background-color-gray;
+  border-radius: 4px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Button */
+.blueButton {
+  background-color: $G-color-blue;
+  color: $G-color-white;
+  font-weight: bold;
+  transition: all 0.16s ease-in;
+}
+
+/* Input */
+.defaultInput {
+  background-color: $G-background-color-extra;
+  border-radius: 4px;
+  color: $G-color-white;
+}
