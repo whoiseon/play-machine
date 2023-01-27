@@ -10,7 +10,13 @@
   height: 260px;
   text-align: center;
 
-  h2 {
+  .product {
     color: $G-color-gray;
+  }
+
+  .history {
+    font-size: 18px;
+    color: $G-color-gray;
+    width: 420px;
   }
 }

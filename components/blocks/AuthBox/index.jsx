@@ -1,23 +1,19 @@
 import {useCallback, useEffect, useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 
 import styles from "./AuthBox.module.scss";
 
-import Logo from "../../atoms/Logo";
-import useInput from "../../../hooks/common/useInput";
-import {useDispatch} from "react-redux";
-import {fetchUserInfo} from "../../../features/user/userSlice";
-import useLocalStorage from "../../../hooks/common/useLocalStorage";
+import Logo from "components/atoms/Logo";
+import useInput from "hooks/common/useInput";
+import {requestLoginUser} from "features/user/userSlice";
 
 export default function AuthBox() {
   const dispatch = useDispatch();
 
   const NameInputRef = useRef(null);
+  const { userData } = useSelector((state) => state.user);
 
   const [name, onChangeName, setName] = useInput('');
-
-  const [userData] = useLocalStorage("userData", null);
-  const [loggingUser, setLoggingUser] = useLocalStorage("loggingUser", null);
-
   const [error, setError] = useState("");
 
   const onSubmitAuth = useCallback((event) => {
@@ -26,14 +22,13 @@ export default function AuthBox() {
     const userInfo = userData.find((user) => user.name === name);
 
     if (userInfo) {
-      dispatch(fetchUserInfo(userInfo));
-      setLoggingUser(userInfo);
+      dispatch(requestLoginUser(userInfo));
     } else {
       setError('플레이 게임즈 직원이 아니시군요!');
     }
 
     setName("");
-  }, [name, userData, setName, setError, fetchUserInfo]);
+  }, [name, userData, setName, setError, requestLoginUser]);
 
   useEffect(() => {
     NameInputRef.current.focus();

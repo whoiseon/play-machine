@@ -103,6 +103,7 @@
       }
 
       button {
+        position: relative;
         margin-left: auto;
         padding: 8px 0 6px;
         width: 36px;
@@ -115,7 +116,9 @@
         }
 
         img {
-          padding-top: 1px;
+          position: static;
+          width: 20px;
+          height: 20px;
         }
       }
     }

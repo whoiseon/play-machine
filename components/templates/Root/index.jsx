@@ -2,28 +2,28 @@ import {useSelector} from "react-redux";
 
 import styles from "./Root.module.scss";
 
-import AdminPage from "../AdminPage";
-import Article from "../../blocks/Article";
-import EmptyProducts from "../../atoms/EmptyProducts";
-import ProductCard from "../../atoms/ProductCard";
-import useModalControl from "../../../hooks/common/useModalControl";
-import Alert from "../../atoms/Alret";
+import AdminPage from "components/templates/AdminPage";
+import Article from "components/blocks/Article";
+import ProductCard from "components/atoms/ProductCard";
+import useModalControl from "hooks/common/useModalControl";
+import Alert from "components/atoms/Alret";
+import EmptyText from "../../atoms/EmptyText";
 
 export default function Root() {
-  const { userInfo } = useSelector((state) => state.user);
+  const { myInfo } = useSelector((state) => state.user);
   const { productList } = useSelector((state) => state.product);
 
   const [alert, setAlert, openAlert, closeAlert] = useModalControl(false);
 
   return (
-    userInfo.admin
+    myInfo.admin
       ? <AdminPage />
       : (
         <div className={styles.wrapper}>
           <Article title="상품 목록">
             {
               productList.length === 0
-                ? <EmptyProducts />
+                ? <EmptyText type="상품" />
                 : (
                   <div className={styles.productList}>
                     {

@@ -2,26 +2,19 @@ import {useCallback, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
 import styles from "./AdminPage.module.scss";
-
-import Article from "../../blocks/Article";
-import useInput from "../../../hooks/common/useInput";
-import useLocalStorage from "../../../hooks/common/useLocalStorage";
-import ProductCard from "../../atoms/ProductCard";
-import EmptyProducts from "../../atoms/EmptyProducts";
-import {addProduct} from "../../../features/product/productSlice";
 import moment from "moment";
+
+import Article from "components/blocks/Article";
+import useInput from "hooks/common/useInput";
+import ProductCard from "components/atoms/ProductCard";
+import {addProduct} from "features/product/productSlice";
+import EmptyText from "../../atoms/EmptyText";
 
 export default function AdminPage() {
   const dispatch = useDispatch();
 
-  const { userInfo } = useSelector((state) => state.user);
-  const { productList } = useSelector((state) => state.product);
-
-  const [productStore, setProductStore] = useLocalStorage('productStore', {
-    moneyInvested: 0,
-    productList: [],
-    history: [],
-  });
+  const { myInfo } = useSelector((state) => state.user);
+  const { productList, history } = useSelector((state) => state.product);
 
   const [productName, onChangeProductName, setProductName] = useInput("");
   const [productPrice, setProductPrice] = useState("0");
@@ -46,7 +39,7 @@ export default function AdminPage() {
 
     const newHistoryObject = { // 구매 내역 객체
       type: '구매',
-      buyer: userInfo.name,
+      buyer: myInfo.name,
       count: Number(productCount),
       category: productCategory,
       dateTime: {
@@ -71,7 +64,8 @@ export default function AdminPage() {
       cost: handlePriceRemoveComma() * 0.4,
       margin: handlePriceRemoveComma() * 0.6,
       refill: 1,
-      best: false
+      best: false,
+      uploadDate: moment().toISOString()
     }
 
     // 수량, 가격 0 방지
@@ -92,20 +86,13 @@ export default function AdminPage() {
       return;
     }
 
-    setProductStore((prevData) => ({
-        ...prevData,
-        history: [newHistoryObject, ...prevData.history],
-        productList: [newProductObject, ...prevData.productList]
-      })
-    );
-
     dispatch(addProduct({
       productObject: newProductObject,
       historyObject: newHistoryObject
     }));
 
     handleInputReset();
-  }, [userInfo, productList, productName, productPrice, productCount, productCategory]);
+  }, [myInfo, productList, productName, productPrice, productCount, productCategory]);
 
   const onChangePriceInput = useCallback((event) => {
     const value = event.target.value;
@@ -187,7 +174,7 @@ export default function AdminPage() {
       <Article title="상품 현황">
         {
           productList?.length === 0
-            ? <EmptyProducts />
+            ? <EmptyText type="상품" />
             : (
               <div className={styles.productList}>
                 {

@@ -5,17 +5,14 @@ import styles from "./ProductCard.module.scss";
 import moment from "moment";
 
 import CategoryImage from "../CategoryImage";
-import useLocalStorage from "hooks/common/useLocalStorage";
+import {buyProductUser} from "features/user/userSlice";
 import {removeProduct, buyProduct} from "features/product/productSlice";
 
 export default function ProductCard({ data, alert, openAlert }) {
   const dispatch = useDispatch();
 
-  const { userInfo } = useSelector((state) => state.user);
+  const { myInfo } = useSelector((state) => state.user);
   const { moneyInvested } = useSelector((state) => state.product);
-
-  const [productStore, setProductStore] = useLocalStorage("productStore", {});
-  const [userData, setUserData] = useLocalStorage("userData", null);
 
   const [removeButton, setRemoveButton] = useState(false);
 
@@ -28,13 +25,11 @@ export default function ProductCard({ data, alert, openAlert }) {
   }, []);
 
   const handleRemoveProduct = useCallback( async () => {
-    await setProductStore((prevData) => ({
-      ...prevData,
-      productList: productStore.productList.filter((p) => p.name !== data.name)
+    dispatch(removeProduct({
+      productName: data.name,
+      timestamp: data.uploadDate
     }));
-
-    dispatch(removeProduct(data.name));
-  }, [productStore]);
+  }, []);
 
   const handleBuyProduct = useCallback(() => {
     // 물건 구매 함수
@@ -48,7 +43,7 @@ export default function ProductCard({ data, alert, openAlert }) {
 
     const newHistoryObject = { // 구매 내역 객체
       type: '판매',
-      buyer: userInfo.name,
+      buyer: myInfo.name,
       dateTime: {
         date: moment().format("YYYY. MM. DD."),
         time: moment().format("h:mm:ss A"),
@@ -61,32 +56,18 @@ export default function ProductCard({ data, alert, openAlert }) {
       sales: data.margin,
     }
 
-    // 로컬 스토리지 데이터 수정
-    const getProductIndex = productStore.productList.findIndex((product) => product.name === data.name);
-    let copyProductStore = [...productStore.productList];
-
-    const findProduct = copyProductStore[getProductIndex]
-    copyProductStore[getProductIndex] = {
-      ...findProduct,
-      count: findProduct.count - 1,
-      salesCount: findProduct.salesCount + 1,
-      totalSales: findProduct.totalSales + (findProduct.price * 0.6),
-    }
-
-    setProductStore((prevData) => ({
-      ...prevData,
-      moneyInvested: moneyInvested - data.price,
-      history: [newHistoryObject, ...prevData.history],
-      productList: copyProductStore
-    }));
-
     // Redux dispatch
     dispatch(buyProduct({
       name: data.name,
       price: data.price,
       newHistoryObject,
     }));
-  }, [data, userData, moneyInvested, openAlert]);
+
+    dispatch(buyProductUser({
+      userId: myInfo.id,
+      price: data.price
+    }))
+  }, [data, myInfo, moneyInvested, openAlert]);
 
   return (
     <>
@@ -96,7 +77,7 @@ export default function ProductCard({ data, alert, openAlert }) {
         onMouseLeave={handleShowRemoveButton}
       >
         {
-          (userInfo.admin && removeButton) && (
+          (myInfo.admin && removeButton) && (
             <button
               type="button"
               className={styles.remove}
@@ -123,7 +104,7 @@ export default function ProductCard({ data, alert, openAlert }) {
           {
             data.count === 0
               ? <p className={styles.soldOut}>SOLD OUT</p>
-              : userInfo.admin
+              : myInfo.admin
                 ? (
                   <p>남은 수량 <i>{ data.count }</i> 개</p>
                 )

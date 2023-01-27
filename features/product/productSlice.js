@@ -18,7 +18,7 @@ const productSlice = createSlice({
     addMoneyInvest: (state, action) => {
       state.moneyInvested = state.moneyInvested + action.payload;
     },
-    returnMoneyInvested: (state, action) => {
+    resetMoneyInvested: (state) => {
       state.moneyInvested = 0;
     },
     addProduct: (state, action) => {
@@ -26,14 +26,17 @@ const productSlice = createSlice({
       state.history.unshift(action.payload.historyObject);
     },
     removeProduct: (state, action) => {
-      state.productList = state.productList.filter((p) => p.name !== action.payload);
+      const findHistoryIndex = state.history.findIndex((h) => h.dateTime.timestamp === action.payload.timestamp);
+      state.productList = state.productList.filter((p) => p.name !== action.payload.productName);
+      state.history.splice(findHistoryIndex, 1);
     },
     buyProduct: (state, action) => {
       state.moneyInvested = state.moneyInvested - action.payload.price;
       state.history.unshift(action.payload.newHistoryObject);
 
       const getProductIndex = state.productList.findIndex((product) => product.name === action.payload.name);
-      const findProduct = state.productList[getProductIndex]
+      const findProduct = state.productList[getProductIndex];
+
       state.productList[getProductIndex].count = findProduct?.count - 1;
       state.productList[getProductIndex].salesCount = findProduct?.salesCount + 1;
       state.productList[getProductIndex].totalSales = findProduct?.totalSales + (findProduct?.price * 0.6);
@@ -41,6 +44,6 @@ const productSlice = createSlice({
   }
 });
 
-export const { loadProductsStore, addMoneyInvest, returnMoneyInvested, addProduct, removeProduct, buyProduct } = productSlice.actions;
+export const { loadProductsStore, addMoneyInvest, resetMoneyInvested, addProduct, removeProduct, buyProduct } = productSlice.actions;
 
 export default productSlice;

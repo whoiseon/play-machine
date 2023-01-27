@@ -21,6 +21,7 @@ $G-color-red-hover: #E56A6D;
 $G-color-red-active: #9D4447;
 
 $G-color-border: #474C50;
+$G-color-border-table: #545A5F;
 
 /* Background Color */
 $G-background-color-default: #36393E;
@@ -71,11 +72,11 @@ $G-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
 @keyframes AlertAnimation {
   0% {
     opacity: 0;
-    transform: translateY(-100px);
+    transform: translateY(-50px);
   }
   20% {
     opacity: 1;
-    transform: translateY(50px);
+    transform: translateY(20px);
   }
   40% {
     opacity: 1;
