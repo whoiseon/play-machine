@@ -9,13 +9,19 @@ import useLocalStorage from "../../../hooks/common/useLocalStorage";
 import ProductCard from "../../atoms/ProductCard";
 import EmptyProducts from "../../atoms/EmptyProducts";
 import {addProduct} from "../../../features/product/productSlice";
+import moment from "moment";
 
 export default function AdminPage() {
   const dispatch = useDispatch();
 
+  const { userInfo } = useSelector((state) => state.user);
   const { productList } = useSelector((state) => state.product);
 
-  const [productStore, setProductStore] = useLocalStorage('productStore', []);
+  const [productStore, setProductStore] = useLocalStorage('productStore', {
+    moneyInvested: 0,
+    productList: [],
+    history: [],
+  });
 
   const [productName, onChangeProductName, setProductName] = useInput("");
   const [productPrice, setProductPrice] = useState("0");
@@ -38,12 +44,33 @@ export default function AdminPage() {
   const onSubmitAddProduct = useCallback((event) => {
     event.preventDefault();
 
-    const productObject = {
+    const newHistoryObject = { // 구매 내역 객체
+      type: '구매',
+      buyer: userInfo.name,
+      count: Number(productCount),
+      category: productCategory,
+      dateTime: {
+        date: moment().format("YYYY. MM. DD."),
+        time: moment().format("h:mm:ss A"),
+        timestamp: moment().toISOString(),
+      },
+      productName: productName,
+      productPrice: handlePriceRemoveComma(),
+      purchase: handlePriceRemoveComma() * 0.4,
+      totalPurchasePrice: (handlePriceRemoveComma() * 0.4) * Number(productCount),
+      margin: handlePriceRemoveComma() * 0.6
+    }
+
+    const newProductObject = { // 상품 객체
       name: productName,
       price: handlePriceRemoveComma(),
       count: Number(productCount),
       category: productCategory,
       salesCount: 0,
+      totalSales: 0,
+      cost: handlePriceRemoveComma() * 0.4,
+      margin: handlePriceRemoveComma() * 0.6,
+      refill: 1,
       best: false
     }
 
@@ -65,10 +92,20 @@ export default function AdminPage() {
       return;
     }
 
-    dispatch(addProduct(productObject));
-    setProductStore((prevData) => [productObject, ...prevData]);
+    setProductStore((prevData) => ({
+        ...prevData,
+        history: [newHistoryObject, ...prevData.history],
+        productList: [newProductObject, ...prevData.productList]
+      })
+    );
+
+    dispatch(addProduct({
+      productObject: newProductObject,
+      historyObject: newHistoryObject
+    }));
+
     handleInputReset();
-  }, [productList, productName, productPrice, productCount, productCategory]);
+  }, [userInfo, productList, productName, productPrice, productCount, productCategory]);
 
   const onChangePriceInput = useCallback((event) => {
     const value = event.target.value;
@@ -149,12 +186,12 @@ export default function AdminPage() {
       </Article>
       <Article title="상품 현황">
         {
-          productList.length === 0
+          productList?.length === 0
             ? <EmptyProducts />
             : (
               <div className={styles.productList}>
                 {
-                  productList.map((product, i) => {
+                  productList?.map((product, i) => {
                     return (
                       <ProductCard
                         key={product.name}

@@ -1,28 +1,32 @@
-import {useCallback, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
 import styles from "./Nav.module.scss";
 
-import useLocalStorage from "../../../hooks/common/useLocalStorage";
-import {signOut} from "../../../features/user/userSlice";
+import useLocalStorage from "hooks/common/useLocalStorage";
+import {fetchUserInfo, signOut} from "features/user/userSlice";
 import Image from "next/image";
-import Modal from "../../atoms/Modal";
-import useModalControl from "../../../hooks/common/useModalControl";
+import Modal from "components/atoms/Modal";
+import useModalControl from "hooks/common/useModalControl";
+import {addMoneyInvest, loadProductsStore, returnMoneyInvested} from "features/product/productSlice";
+import UsageHistory from "../../atoms/UsageHistory";
 
 export default function Nav() {
   const dispatch = useDispatch();
 
   const { userInfo } = useSelector((state) => state.user);
+  const { moneyInvested, history, productList } = useSelector((state) => state.product);
 
-  const [products, setProducts] = useState([]);
-  const [productStore, setProductStore] = useLocalStorage("products", products);
-
+  const [productStore, setProductStore] = useLocalStorage("productStore", {});
+  const [userData, setUserData] = useLocalStorage("userData", null);
   const [loggingUser, setLoggingUser, removeLoggingUser] = useLocalStorage("loggingUser", null);
-  const [myMoney, setMyMoney] = useState(userInfo.money);
-  const [moneyInvested, setMoneyInvested] = useState("");
-  const [unitError, setUnitError] = useState("");
 
-  const [investedModal, setModal, openModal, closeModal] = useModalControl(false);
+  const [moneyInvest, setMoneyInvest] = useState("");
+  const [myHistory, setMyHistory] = useState([]);
+  const [error, setError] = useState("");
+
+  const [investedModal, setInvestedModal, openInvestedModal, closeInvestedModal] = useModalControl(false);
+  const [historyModal, setHistoryModal, openHistoryModal, closeHistoryModal] = useModalControl(false);
 
   const onLogout = useCallback(() => {
     dispatch(signOut());
@@ -38,48 +42,142 @@ export default function Nav() {
   }, []);
 
   const handleMoneyUnitCheck = useCallback((number) => {
-    if (number % 1000 !== 0) {
-      return false;
-    }
-    return true;
+    // 1000원 단위 체크 함수
+    return number % 1000 === 0;
   }, []);
 
   const handleMoneyIncrement = useCallback((event) => {
     const value = event.target.textContent;
     const removedCommaValue = Number(value.replaceAll(",", ""));
+    const removedCommaMoneyInvested = handleRemoveCommaValue(moneyInvest);
 
-    setMoneyInvested(
+    // Increment 버튼을 사용했을 때 보유 머니보다 큰 값 입력 방지
+    if (!((removedCommaValue + removedCommaMoneyInvested) <= userInfo.money)) {
+      setError("보유 금액을 초과합니다!");
+      return;
+    }
+
+    setMoneyInvest(
       (prev) => (handleRemoveCommaValue(prev) + removedCommaValue).toLocaleString()
     );
-  }, [handleRemoveCommaValue]);
+  }, [handleRemoveCommaValue, moneyInvest, userInfo]);
 
   const onChangeMoneyInvested = useCallback((event) => {
     const value = event.target.value;
     const numberTypeCheck = /^[0-9,]/.test(value);
     const removedCommaValue = Number(value.replaceAll(",", ""));
 
+    // 숫자가 아닌 한글을 입력했을 때
     if (!numberTypeCheck) {
-      setMoneyInvested("");
+      setMoneyInvest("");
       return;
     }
 
-    if (!handleMoneyUnitCheck(removedCommaValue)) {
-      setUnitError("1,000원 단위로만 투입 가능합니다!");
-    } else {
-      setUnitError("");
+    // 보유한 금액보다 더 큰 금액을 입력했을때 초기화
+    if (removedCommaValue > userInfo.money) {
+      setMoneyInvest(handleNumberCommaFormat(userInfo.money));
+      setError("보유 금액을 초과했습니다!");
+      return;
     }
 
-    setMoneyInvested(removedCommaValue.toLocaleString());
-  }, [handleMoneyUnitCheck]);
+    // 1,000원 단위 체크
+    if (!handleMoneyUnitCheck(removedCommaValue)) {
+      setError("1,000원 단위로만 투입 가능합니다!");
+    } else {
+      setError("");
+    }
+
+    setMoneyInvest(removedCommaValue.toLocaleString());
+  }, [handleMoneyUnitCheck, handleNumberCommaFormat, userInfo.money]);
 
   const onCloseModal = useCallback(() => {
-    setModal(false);
-    setMoneyInvested("");
+    setInvestedModal(false);
+    setError("");
+    setMoneyInvest("");
   }, []);
+
+  const handleMoneyInvested = useCallback(() => {
+    // 보유 머니 투입 함수
+
+    // 로컬스토리지 데이터 수정
+    const getMyInfoIndex = userData.findIndex((user) => user.id === userInfo.id);
+    let copyUserData = [...userData];
+
+    if(!handleMoneyUnitCheck(handleRemoveCommaValue(moneyInvest))) {
+      setError("1,000원 단위로만 투입 가능합니다!");
+      return;
+    }
+
+    if (!moneyInvest) {
+      setError("투입할 금액을 입력해주세요");
+      return;
+    }
+
+    setProductStore((prevData) => ({
+      ...prevData,
+      moneyInvested: handleRemoveCommaValue(moneyInvest)
+    }));
+
+    copyUserData[getMyInfoIndex] = {
+      ...copyUserData[getMyInfoIndex],
+      money: userInfo.money - handleRemoveCommaValue(moneyInvest)
+    }
+
+    setUserData(copyUserData);
+    setLoggingUser(copyUserData[getMyInfoIndex]);
+
+    // redux userInfo update
+    dispatch(fetchUserInfo(copyUserData[getMyInfoIndex]));
+    dispatch(addMoneyInvest(handleRemoveCommaValue(moneyInvest)));
+
+    // reset
+    setMoneyInvest("");
+    closeInvestedModal();
+  }, [userInfo, moneyInvest, handleRemoveCommaValue, closeInvestedModal]);
+
+  const handleChangesReturn = useCallback(() => {
+    // 남은 잔돈 반환 함수
+    // 로컬스토리지 데이터 수정
+    const getMyInfoIndex = userData.findIndex((user) => user.id === userInfo.id);
+    let copyUserData = [...userData];
+
+    if (!(moneyInvested > 0)) return;
+
+    copyUserData[getMyInfoIndex] = {
+      ...copyUserData[getMyInfoIndex],
+      money: userInfo.money + moneyInvested
+    }
+
+    setUserData(copyUserData);
+    setLoggingUser(copyUserData[getMyInfoIndex]);
+
+    setProductStore({
+      history,
+      productList,
+      moneyInvested: 0,
+    });
+
+    // redux userInfo update
+    dispatch(fetchUserInfo(copyUserData[getMyInfoIndex]));
+    dispatch(returnMoneyInvested(handleRemoveCommaValue(moneyInvest)));
+  }, [history, productList, userInfo, handleRemoveCommaValue, moneyInvest, moneyInvested]);
 
   const handleCalculateMachine = useCallback(() => {
     // 정산기능
   }, []);
+
+  useEffect(() => {
+    setMyHistory(history.filter((h) => h.buyer === userInfo.name))
+  }, [history, userInfo]);
+
+  useEffect(() => {
+    // 모달이 켜져있을 때 스크롤 방지
+    if (investedModal || historyModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [investedModal, historyModal]);
 
   return (
     <nav className={styles.wrapper}>
@@ -108,7 +206,7 @@ export default function Nav() {
             ? (
               <div className={styles.seedMoney}>
                 <span>보유 금액</span>
-                <span className={styles.money}>{ handleNumberCommaFormat(myMoney) } 원</span>
+                <span className={styles.money}>{ handleNumberCommaFormat(userInfo.money) } 원</span>
               </div>
             )
             : (
@@ -129,27 +227,30 @@ export default function Nav() {
               <li>
                 <div>
                   <p>투입 금액</p>
-                  <p className={styles.moneyInvested}>0 원</p>
+                  <p className={styles.moneyInvested}>{ handleNumberCommaFormat(moneyInvested) } 원</p>
                 </div>
-                <button
-                  type="button"
-                  onClick={openModal}
-                >
-                  투입
-                </button>
-              </li>
-              <li>
-                <div>
-                  <p>잔돈</p>
-                  <p className={styles.changes}>0 원</p>
+                <div className={styles.ctrlButton}>
+                  <button
+                    type="button"
+                    onClick={openInvestedModal}
+                  >
+                    투입
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleChangesReturn}
+                  >
+                    반환
+                  </button>
                 </div>
-                <button type="button">
-                  반환
-                </button>
               </li>
             </ul>
-            <button className={styles.history} type="button">
-              이용 내역
+            <button
+              type="button"
+              className={styles.history}
+              onClick={openHistoryModal}
+            >
+              이용내역 <i>{ myHistory.length }</i> 건
             </button>
           </>
         )
@@ -158,14 +259,18 @@ export default function Nav() {
         investedModal && (
           <Modal
             title="투입 하기"
-            closeModal={onCloseModal}
+            closeModal={closeInvestedModal}
           >
             <div className={styles.investedWrapper}>
-              {unitError && <p className={styles.warning}>1,000원 단위로만 투입 가능합니다.</p>}
+              {error && <p className={styles.warning}>{error}</p>}
+              <div className={styles.myMoneyInModal}>
+                <p>보유 금액</p>
+                <p className={styles.money}>{ handleNumberCommaFormat(userInfo.money) } 원</p>
+              </div>
               <div className={styles.inputWrapper}>
                 <input
                   type="text"
-                  value={moneyInvested}
+                  value={moneyInvest}
                   placeholder="0"
                   onChange={onChangeMoneyInvested}
                 />
@@ -189,9 +294,23 @@ export default function Nav() {
               <button
                 type="button"
                 className={styles.invested}
+                onClick={handleMoneyInvested}
               >
                 투입
               </button>
+            </div>
+          </Modal>
+        )
+      }
+      {
+        historyModal && (
+          <Modal title="이용내역" closeModal={closeHistoryModal}>
+            <div className={styles.historyWrapper}>
+              {
+                myHistory.map((history, i) => {
+                  return <UsageHistory key={history.dateTime.time} data={history} />
+                })
+              }
             </div>
           </Modal>
         )

@@ -94,3 +94,11 @@
   border-radius: 4px;
   color: $G-color-white;
 }
+
+/* Alret */
+.alert {
+  background-color: $G-background-color-extra;
+  width: 300px;
+  border-radius: 4px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}

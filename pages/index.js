@@ -8,7 +8,7 @@ import Layout from "../components/templates/Layout";
 import useLocalStorage from "../hooks/common/useLocalStorage";
 import PageLoading from "../components/atoms/PageLoading";
 import {updateUserInfo} from "../features/user/userSlice";
-import {loadProductsList} from "../features/product/productSlice";
+import {loadProductsStore} from "../features/product/productSlice";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -25,7 +25,7 @@ export default function Home() {
     }
 
     if (productStore) {
-      dispatch(loadProductsList());
+      dispatch(loadProductsStore());
     }
 
     setInit(true);

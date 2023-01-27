@@ -11,12 +11,12 @@ const userSlice = createSlice({
     fetchUserInfo: (state, action) => {
       state.userInfo = action.payload
     },
-    updateUserInfo: (state) => {
+    updateUserInfo: (state, action) => {
       state.userInfo = JSON.parse(localStorage.getItem('loggingUser'))
     },
     signOut: (state) => {
       state.userInfo = null;
-    }
+    },
   }
 });
 

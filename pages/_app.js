@@ -8,23 +8,26 @@ import store from "../features/store";
 import useLocalStorage from 'hooks/common/useLocalStorage';
 
 export default function App({ Component, pageProps }) {
-  const [userData, setUserData] = useLocalStorage('userData', userList);
+  const [userData, setUserData] = useLocalStorage('userData', null);
+  const [productStore, setProductStore] = useLocalStorage('productStore', null);
 
   // 로컬스토리지에 초기 유저 데이터 저장
   useEffect(() => {
-    if(userData) {
+    if (!userData) {
       setUserData(userList);
     }
   }, [userData, userList]);
 
-  const now = new Date();
-  const minute = now.getMinutes();
-
+  // 로컬스토리지에 초키 상품 데이터 저장
   useEffect(() => {
-    if (minute === 6) {
-      console.log('hid');
+    if (!productStore) {
+      setProductStore({
+        moneyInvested: 0,
+        history: [],
+        productList: [],
+      })
     }
-  }, [minute]);
+  }, [productStore]);
 
   return (
     <>
