@@ -136,6 +136,13 @@
       width: 100%;
       padding: 20px 0;
     }
+
+    .restart {
+      @extend .redButton;
+
+      width: 100%;
+      padding: 20px 0;
+    }
   }
 
   .investedWrapper {

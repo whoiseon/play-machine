@@ -11,7 +11,7 @@ import EmptyText from "../../atoms/EmptyText";
 
 export default function Root() {
   const { myInfo } = useSelector((state) => state.user);
-  const { productList } = useSelector((state) => state.product);
+  const { productList, sales } = useSelector((state) => state.product);
 
   const [alert, setAlert, openAlert, closeAlert] = useModalControl(false);
 
@@ -22,7 +22,7 @@ export default function Root() {
         <div className={styles.wrapper}>
           <Article title="상품 목록">
             {
-              productList.length === 0
+              !sales || productList.length === 0
                 ? <EmptyText type="상품" />
                 : (
                   <div className={styles.productList}>

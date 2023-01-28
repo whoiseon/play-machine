@@ -21,15 +21,13 @@ export default function CalculateTable({ type }) {
   const getTotalCount = useCallback((array, key, subKey = '') => { // 총 판매 금액을 계산하는 함수
     let totalCount = 0;
 
-    if (subKey) {
-      array.map((a) => {
+    array.map((a) => {
+      if (subKey) {
         return totalCount += (a[key] * a[subKey])
-      })
-    } else {
-      array.map((a) => {
+      } else {
         return totalCount += a[key]
-      })
-    }
+      }
+    })
 
     return totalCount;
   }, []);

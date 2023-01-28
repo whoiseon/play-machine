@@ -4,10 +4,10 @@ import Image from "next/image";
 
 import styles from "./Nav.module.scss";
 
-import {myMoneyInvest, myMoneyInvestedReturn, signOut} from "features/user/userSlice";
+import {myMoneyInvest, myMoneyInvestedReturn, signOut, updateRestartUserMoney} from "features/user/userSlice";
 import Modal from "components/atoms/Modal";
 import useModalControl from "hooks/common/useModalControl";
-import {addMoneyInvest, resetMoneyInvested} from "features/product/productSlice";
+import {addMoneyInvest, resetMoneyInvested, updateRestartProduct} from "features/product/productSlice";
 import UsageHistory from "components/atoms/UsageHistory";
 import EmptyText from "../../atoms/EmptyText";
 import Calculate from "../Calculate";
@@ -16,7 +16,7 @@ export default function Nav() {
   const dispatch = useDispatch();
 
   const { myInfo } = useSelector((state) => state.user);
-  const { moneyInvested, history, productList } = useSelector((state) => state.product);
+  const { sales, moneyInvested, history, productList } = useSelector((state) => state.product);
 
   const [moneyInvest, setMoneyInvest] = useState("");
   const [myHistory, setMyHistory] = useState([]);
@@ -120,6 +120,12 @@ export default function Nav() {
     dispatch(resetMoneyInvested(handleRemoveCommaValue(moneyInvest)));
   }, [history, productList, myInfo, handleRemoveCommaValue, moneyInvest, moneyInvested]);
 
+  const handleSalesRestart = useCallback(() => {
+    dispatch(updateRestartUserMoney());
+    dispatch(updateRestartProduct());
+    closeCalcModal();
+  }, [])
+
   useEffect(() => {
     setMyHistory(history.filter((h) => h.buyer === myInfo.name))
   }, [history, myInfo]);
@@ -163,15 +169,25 @@ export default function Nav() {
                 <span className={styles.money}>{ handleNumberCommaFormat(myInfo.money) } 원</span>
               </div>
             )
-            : (
-              <button
-                type="button"
-                className={styles.calculate}
-                onClick={openCalcModal}
-              >
-                정산하기
-              </button>
-            )
+            : sales
+              ? (
+                <button
+                  type="button"
+                  className={styles.calculate}
+                  onClick={openCalcModal}
+                >
+                  정산하기
+                </button>
+              )
+              : (
+                <button
+                  type="button"
+                  className={styles.restart}
+                  onClick={handleSalesRestart}
+                >
+                  영업 재시작
+                </button>
+              )
         }
       </div>
       {
@@ -264,7 +280,7 @@ export default function Nav() {
                 myHistory.length > 0
                   ? (
                     myHistory.map((history, i) => {
-                      return <UsageHistory key={history.dateTime.time} data={history} />
+                      return <UsageHistory key={history.dateTime.timestamp} data={history} />
                     })
                   )
                   : <EmptyText type="이용내역" />
@@ -276,7 +292,7 @@ export default function Nav() {
       {
         calcModal && (
           <Modal title="정산하기" closeModal={closeCalcModal}>
-            <Calculate />
+            <Calculate handleSalesRestart={handleSalesRestart} />
           </Modal>
         )
       }

@@ -87,6 +87,13 @@ export default function ProductCard({ data, alert, openAlert }) {
             </button>
           )
         }
+        {
+          data.best && (
+            <div className={styles.bestProduct}>
+              <span>BEST</span>
+            </div>
+          )
+        }
         <div className={styles.productInfo}>
           <div className={styles.info}>
             <h2>

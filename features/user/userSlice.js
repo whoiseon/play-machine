@@ -35,10 +35,20 @@ const userSlice = createSlice({
       state.userData[findUserIndex].totalSales += action.payload.price;
       state.myInfo.totalSalesCount += 1;
       state.myInfo.totalSales += action.payload.price;
+    },
+    updateRestartUserMoney: (state) => {
+      state.userData = state.userData.map((user) => {
+        return ({
+          ...user,
+          money: user.money + 10000,
+          totalSalesCount: 0,
+          totalSales: 0
+        })
+      })
     }
   }
 });
 
-export const { loadUserData, myMoneyInvest, requestLoginUser, myMoneyInvestedReturn, buyProductUser, signOut } = userSlice.actions;
+export const { loadUserData, myMoneyInvest, requestLoginUser, myMoneyInvestedReturn, buyProductUser, updateRestartUserMoney, signOut } = userSlice.actions;
 
 export default userSlice;

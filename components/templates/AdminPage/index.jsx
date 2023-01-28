@@ -41,6 +41,7 @@ export default function AdminPage() {
       type: '구매',
       buyer: myInfo.name,
       count: Number(productCount),
+      initialCount: Number(productCount),
       category: productCategory,
       dateTime: {
         date: moment().format("YYYY. MM. DD."),
@@ -50,7 +51,7 @@ export default function AdminPage() {
       productName: productName,
       productPrice: handlePriceRemoveComma(),
       purchase: handlePriceRemoveComma() * 0.4,
-      totalPurchasePrice: (handlePriceRemoveComma() * 0.4) * Number(productCount),
+      refill: 1,
       margin: handlePriceRemoveComma() * 0.6
     }
 
@@ -58,6 +59,7 @@ export default function AdminPage() {
       name: productName,
       price: handlePriceRemoveComma(),
       count: Number(productCount),
+      initialCount: Number(productCount),
       category: productCategory,
       salesCount: 0,
       totalSales: 0,
