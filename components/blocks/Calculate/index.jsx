@@ -46,12 +46,13 @@ export default function Calculate({ handleSalesRestart }) {
 
   const excelDownloader = useCallback(() => {
     const newExcelHeader = {
-      header: ['구분', '시간', '이름', '매입', '매출', '순수익'],
+      header: ['구분', '시간', '이름', '상품명', '매입', '매출', '순수익'],
     }
     let newExcelObjects = [{
       '구분': '총 합계',
       '시간': '',
       '이름': '',
+      '상품명': '',
       '매입': getHistoryTotalMoney('매입'),
       '매출': getHistoryTotalMoney('매출'),
       '순수익': getHistoryTotalMoney('순수익') - getHistoryTotalMoney('매입'),
@@ -62,6 +63,7 @@ export default function Calculate({ handleSalesRestart }) {
         '구분': h.type,
         '시간': moment(h.dateTime?.timestamp).format("YYYY-MM-DD hh:mm:ss"),
         '이름': h.buyer,
+        '상품명': h.productName,
         '매입': h.type === '구매' ? (h.purchase * h.count) : '',
         '매출': h.type === '판매' ? h.productPrice : '',
         '순수익': h.type === '판매' ? h.sales : '',
@@ -75,6 +77,7 @@ export default function Calculate({ handleSalesRestart }) {
       {wpx: 60}, // 구분
       {wpx: 140}, // 시간
       {wpx: 100}, // 이름
+      {wpx: 100}, // 상품명
       {wpx: 120}, // 매입
       {wpx: 120}, // 매출
       {wpx: 120}, // 순수익

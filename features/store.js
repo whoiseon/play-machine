@@ -38,7 +38,7 @@ const makeStore = () => {
         serializableCheck: {
           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
-      }).concat()
+      }).concat(logger)
     ),
     devTools: isDev,
   });
