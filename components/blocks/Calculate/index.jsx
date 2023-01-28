@@ -20,6 +20,8 @@ export default function Calculate({ handleSalesRestart }) {
 
   const [tab, setTab] = useState("이용자별");
 
+  const onlyPurchaseProduct = history.filter((h) => h.type !== '구매');
+  console.log(onlyPurchaseProduct);
   const getHistoryTotalMoney = useCallback((type) => {
     let totalMoney = 0;
 
@@ -124,7 +126,7 @@ export default function Calculate({ handleSalesRestart }) {
         </div>
         <div className={styles.wrapper}>
           {
-            history.length !== 0
+            history.length > 0 && onlyPurchaseProduct.length > 0
               ? <CalculateTable type={tab} />
               : <EmptyText type="정산" />
           }
