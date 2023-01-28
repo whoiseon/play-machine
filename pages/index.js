@@ -27,7 +27,7 @@ export default function Home() {
     const timer = setInterval(() => {
       const currentTime = new Date();
 
-      const newHistoryObject = soldOutProduct.map((product) => {
+      const newHistoryObject = soldOutProduct.map((product) => { // 매입 history 객체
         return ({
           type: '구매',
           buyer: '나사장',
@@ -45,8 +45,8 @@ export default function Home() {
         })
       })
 
-      if (currentTime.getMinutes() <= 1 && soldOutProduct.length > 0) {
-        dispatch(resetProductCount(newHistoryObject))
+      if (currentTime.getMinutes() <= 1 && soldOutProduct.length > 0) { // 매시간 정각 품절 재품이 있으면 초기 수량만큼 초기화
+        dispatch(resetProductCount(newHistoryObject));
       }
     }, 60000);
 

@@ -10,7 +10,6 @@ import {
   REGISTER,
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'
-import logger from "redux-logger";
 import userSlice from "./user/userSlice";
 import productSlice from "./product/productSlice";
 

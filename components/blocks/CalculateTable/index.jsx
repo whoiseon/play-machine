@@ -9,7 +9,7 @@ export default function CalculateTable({ type }) {
   const { myInfo, userData } = useSelector((state) => state.user);
   const { productList } = useSelector((state) => state.product);
 
-  const [userList, setUserList] = useState(userData.filter((user) => !user.admin));
+  const [userList] = useState(userData.filter((user) => !user.admin));
 
   const getArrayLank = useCallback((array, key) => {
     const copyArrayData = [...array];
@@ -59,6 +59,7 @@ export default function CalculateTable({ type }) {
               data={data}
               rank={i + 1}
               type={type}
+              getTotalCount={getTotalCount}
             />
           })
         }

@@ -1,5 +1,5 @@
-import styles from "./Modal.module.scss";
 import Image from "next/image";
+import styles from "./Modal.module.scss";
 
 export default function Modal({ children, title, closeModal }) {
   return (

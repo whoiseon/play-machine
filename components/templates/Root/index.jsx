@@ -7,7 +7,7 @@ import Article from "components/blocks/Article";
 import ProductCard from "components/atoms/ProductCard";
 import useModalControl from "hooks/common/useModalControl";
 import Alert from "components/atoms/Alret";
-import EmptyText from "../../atoms/EmptyText";
+import EmptyText from "components/atoms/EmptyText";
 
 export default function Root() {
   const { myInfo } = useSelector((state) => state.user);

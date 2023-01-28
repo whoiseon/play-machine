@@ -7,8 +7,9 @@ import { utils, writeFile } from "xlsx";
 import moment from "moment";
 
 import CalculateTable from "../CalculateTable";
-import EmptyText from "../../atoms/EmptyText";
+import EmptyText from "components/atoms/EmptyText";
 import {stopSalesState} from "features/product/productSlice";
+import handleCommaFormat from "hooks/utils/handleCommaFormat";
 
 export default function Calculate({ handleSalesRestart }) {
   const dispatch = useDispatch();
@@ -16,13 +17,13 @@ export default function Calculate({ handleSalesRestart }) {
   const { history, sales, productList } = useSelector((state) => state.product);
 
   const [complete, setComplete] = useState(false);
-  const [nowDate, setNowDate] = useState(moment().format("YYYY년 MM월 DD일 HH시 MM분"));
+  const [nowDate] = useState(moment().format("YYYY년 MM월 DD일 HH시 MM분"));
 
   const [tab, setTab] = useState("이용자별");
 
   const onlyPurchaseProduct = history.filter((h) => h.type !== '구매');
-  console.log(onlyPurchaseProduct);
-  const getHistoryTotalMoney = useCallback((type) => {
+
+  const getHistoryTotalMoney = useCallback((type) => { // 인자로 매입, 매출, 순수익의 string 을 받아서 총 금액을 계산해주는 함수
     let totalMoney = 0;
 
     history.map((h) => {
@@ -39,24 +40,32 @@ export default function Calculate({ handleSalesRestart }) {
     return totalMoney;
   }, [history]);
 
-  const getArrayLank = useCallback((array, key) => {
+  const getArrayLank = useCallback((array, key) => { // 인자로 배열과, 객체 key를 받아서 key 순서로 정렬해주는 함수
     const copyArrayData = [...array];
     return copyArrayData.sort((a, b) => (
       b[key] - a[key]
     ));
   }, []);
 
-  const excelDownloader = useCallback(() => {
-    const newExcelHeader = {
+  const excelDownloader = useCallback(() => { // 액셀 다운로드 함수
+    const newExcelHeader = { // 액셀 헤더
       header: ['구분', '시간', '이름', '상품명', '매입', '매출', '순수익'],
     }
-    let newExcelObjects = [{
-      '구분': '총 합계',
+    let newExcelObjects = [{ // 엑셀에 저장할 객체 initialValue 로 총 합계가 있음.
+      '구분': '합계',
       '시간': '',
       '이름': '',
       '상품명': '',
       '매입': getHistoryTotalMoney('매입'),
       '매출': getHistoryTotalMoney('매출'),
+      '순수익': getHistoryTotalMoney('순수익'),
+    }, {
+      '구분': '총 수익',
+      '시간': '',
+      '이름': '',
+      '상품명': '',
+      '매입': '',
+      '매출': '',
       '순수익': getHistoryTotalMoney('순수익') - getHistoryTotalMoney('매입'),
     }];
 
@@ -75,7 +84,7 @@ export default function Calculate({ handleSalesRestart }) {
     const workBook = utils.book_new();
 
     const calculateSheet =  utils.json_to_sheet(newExcelObjects, newExcelHeader);
-    calculateSheet["!cors"] = [
+    calculateSheet["!cors"] = [ // 액셀 너비
       {wpx: 60}, // 구분
       {wpx: 140}, // 시간
       {wpx: 100}, // 이름
@@ -89,13 +98,8 @@ export default function Calculate({ handleSalesRestart }) {
     writeFile(workBook, `${moment().format("YYMMDDHHMMSS")}_플레이머신_정산.xlsx` );
   }, [history, moment])
 
-  const handleNumberCommaFormat = useCallback((number) => {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }, []);
-
   const handleChangeTab = useCallback((event) => {
     const { textContent } = event.target;
-
     setTab(textContent);
   }, []);
 
@@ -167,15 +171,19 @@ export default function Calculate({ handleSalesRestart }) {
             </div>
             <div className={styles.line}>
               <p>매입</p>
-              <p>{ handleNumberCommaFormat(getHistoryTotalMoney('매입')) } 원</p>
+              <p>{ handleCommaFormat(getHistoryTotalMoney('매입')) } 원</p>
             </div>
             <div className={styles.line}>
               <p>매출</p>
-              <p>{ handleNumberCommaFormat(getHistoryTotalMoney('매출')) } 원</p>
+              <p>{ handleCommaFormat(getHistoryTotalMoney('매출')) } 원</p>
             </div>
             <div className={styles.line}>
               <p>순수익</p>
-              <p>{ handleNumberCommaFormat(getHistoryTotalMoney('순수익') - getHistoryTotalMoney('매입')) } 원</p>
+              <p>{ handleCommaFormat(getHistoryTotalMoney('순수익')) } 원</p>
+            </div>
+            <div className={`${styles.line} ${styles.total}`}>
+              <p>총 수익</p>
+              <p>{ handleCommaFormat(getHistoryTotalMoney('순수익') - getHistoryTotalMoney('매입')) } 원</p>
             </div>
           </div>
           <div className={styles.buttonWrapper}>

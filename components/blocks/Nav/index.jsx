@@ -9,20 +9,21 @@ import Modal from "components/atoms/Modal";
 import useModalControl from "hooks/common/useModalControl";
 import {addMoneyInvest, resetMoneyInvested, updateRestartProduct} from "features/product/productSlice";
 import UsageHistory from "components/atoms/UsageHistory";
-import EmptyText from "../../atoms/EmptyText";
+import EmptyText from "components/atoms/EmptyText";
 import Calculate from "../Calculate";
+import handleCommaFormat from "hooks/utils/handleCommaFormat";
 
 export default function Nav() {
   const dispatch = useDispatch();
 
   const { myInfo } = useSelector((state) => state.user);
-  const { sales, moneyInvested, history, productList } = useSelector((state) => state.product);
+  const { sales, moneyInvested, history } = useSelector((state) => state.product);
 
   const [moneyInvest, setMoneyInvest] = useState("");
   const [myHistory, setMyHistory] = useState([]);
   const [error, setError] = useState("");
 
-  const [investedModal, setInvestedModal, openInvestedModal, closeInvestedModal] = useModalControl(false);
+  const [investedModal, setInvestedModal, openInvestedModal, closeInvestedModal] = useModalControl(false, () => { setMoneyInvest("") });
   const [historyModal, setHistoryModal, openHistoryModal, closeHistoryModal] = useModalControl(false);
   const [calcModal, setCalcModal, openCalcModal, closeCalcModal] = useModalControl(false);
 
@@ -30,108 +31,93 @@ export default function Nav() {
     dispatch(signOut());
   }, [signOut]);
 
-  const handleNumberCommaFormat = useCallback((number) => {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }, []);
-
-  const handleRemoveCommaValue = useCallback((string) => {
-    return Number(string.replaceAll(",", ""));
-  }, []);
-
-  const handleMoneyUnitCheck = useCallback((number) => {
-    // 1000원 단위 체크 함수
+  const handleMoneyUnitCheck = useCallback((number) => { // 1000원 단위 체크 후 boolean을 반환함
     return number % 1000 === 0;
   }, []);
 
-  const handleMoneyIncrement = useCallback((event) => {
+  const handleMoneyIncrement = useCallback((event) => { // 버튼을 통한 투입 금액 입력 함수
     const value = event.target.textContent;
     const removedCommaValue = Number(value.replaceAll(",", ""));
-    const removedCommaMoneyInvested = handleRemoveCommaValue(moneyInvest);
+    const removedCommaMoneyInvested = handleCommaFormat(moneyInvest);
 
-    // Increment 버튼을 사용했을 때 보유 머니보다 큰 값 입력 방지
-    if (!((removedCommaValue + removedCommaMoneyInvested) <= myInfo.money)) {
+    if (!((removedCommaValue + removedCommaMoneyInvested) <= myInfo.money)) { // 버튼을 사용해 금액을 증가 시킬 때 보유 머니보다 큰 값 입력 방지
       setError("보유 금액을 초과합니다!");
       return;
     }
 
     setMoneyInvest(
-      (prev) => (handleRemoveCommaValue(prev) + removedCommaValue).toLocaleString()
+      (prev) => (handleCommaFormat(prev) + removedCommaValue).toLocaleString()
     );
-  }, [handleRemoveCommaValue, moneyInvest, myInfo]);
+  }, [handleCommaFormat, moneyInvest, myInfo]);
 
   const onChangeMoneyInvested = useCallback((event) => {
     const value = event.target.value;
     const numberTypeCheck = /^[0-9,]/.test(value);
     const removedCommaValue = Number(value.replaceAll(",", ""));
 
-    // 숫자가 아닌 한글을 입력했을 때
-    if (!numberTypeCheck) {
+    if (!numberTypeCheck) { // number가 아닌 string을 입력했을 때
       setMoneyInvest("");
       return;
     }
 
-    // 보유한 금액보다 더 큰 금액을 입력했을때 초기화
-    if (removedCommaValue > myInfo.money) {
-      setMoneyInvest(handleNumberCommaFormat(myInfo.money));
+    if (removedCommaValue > myInfo.money) { // 보유한 금액보다 더 큰 금액을 입력했을때 초기화
+      setMoneyInvest(handleCommaFormat(myInfo.money));
       setError("보유 금액을 초과했습니다!");
       return;
     }
 
-    // 1,000원 단위 체크
-    if (!handleMoneyUnitCheck(removedCommaValue)) {
+    if (!handleMoneyUnitCheck(removedCommaValue)) { // 1,000원 단위 체크 함수로 단위 체크
       setError("1,000원 단위로만 투입 가능합니다!");
     } else {
       setError("");
     }
 
     setMoneyInvest(removedCommaValue.toLocaleString());
-  }, [handleMoneyUnitCheck, handleNumberCommaFormat, myInfo.money]);
+  }, [handleMoneyUnitCheck, handleCommaFormat, myInfo.money]);
 
   const handleMoneyInvested = useCallback(() => { // 보유 머니 투입 함수
-    if(!handleMoneyUnitCheck(handleRemoveCommaValue(moneyInvest))) {
+    if(!handleMoneyUnitCheck(handleCommaFormat(moneyInvest))) { // 1,000원 단위 체크
       setError("1,000원 단위로만 투입 가능합니다!");
       return;
     }
 
-    if (!moneyInvest) {
+    if (!moneyInvest) { // 금액을 입력하지 않았을 때
       setError("투입할 금액을 입력해주세요");
       return;
     }
 
     dispatch(myMoneyInvest({
       userId: myInfo.id,
-      moneyInvested: handleRemoveCommaValue(moneyInvest)
+      moneyInvested: handleCommaFormat(moneyInvest)
     }));
-    dispatch(addMoneyInvest(handleRemoveCommaValue(moneyInvest)));
+    dispatch(addMoneyInvest(handleCommaFormat(moneyInvest)));
 
-    // reset
+    // state를 초기화시켜주고 modal 종료
     setMoneyInvest("");
     closeInvestedModal();
-  }, [myInfo, moneyInvest, handleRemoveCommaValue, closeInvestedModal]);
+  }, [myInfo, moneyInvest, handleCommaFormat, closeInvestedModal]);
 
-  const handleChangesReturn = useCallback(() => {
-    // 남은 잔돈 반환 함수
-    if (moneyInvested <= 0) return;
+  const handleChangesReturn = useCallback(() => { // 남은 잔돈 반환 함수
+    if (moneyInvested <= 0) return; // 투입된 금액이 0원일 때 코드 실행 방지
 
     dispatch(myMoneyInvestedReturn({
       userId: myInfo.id,
       changes: moneyInvested
-    }))
-    dispatch(resetMoneyInvested(handleRemoveCommaValue(moneyInvest)));
-  }, [history, productList, myInfo, handleRemoveCommaValue, moneyInvest, moneyInvested]);
+    }));
+    dispatch(resetMoneyInvested(handleCommaFormat(moneyInvest)));
+  }, [myInfo, handleCommaFormat, moneyInvest, moneyInvested]);
 
-  const handleSalesRestart = useCallback(() => {
+  const handleSalesRestart = useCallback(() => { // 판매 재시작 함수
     dispatch(updateRestartUserMoney());
     dispatch(updateRestartProduct());
     closeCalcModal();
   }, [])
 
-  useEffect(() => {
+  useEffect(() => { // 컴포넌트가 mount되면 myHistory state에 이용내역을 푸쉬
     setMyHistory(history.filter((h) => h.buyer === myInfo.name))
   }, [history, myInfo]);
 
-  useEffect(() => {
-    // 모달이 켜져있을 때 스크롤 방지
+  useEffect(() => { // 모달이 켜져있을 때 background 스크롤 방지
     if (investedModal || historyModal || calcModal) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -166,7 +152,7 @@ export default function Nav() {
             ? (
               <div className={styles.seedMoney}>
                 <span>보유 금액</span>
-                <span className={styles.money}>{ handleNumberCommaFormat(myInfo.money) } 원</span>
+                <span className={styles.money}>{ handleCommaFormat(myInfo.money) } 원</span>
               </div>
             )
             : sales
@@ -197,7 +183,7 @@ export default function Nav() {
               <li>
                 <div>
                   <p>투입 금액</p>
-                  <p className={styles.moneyInvested}>{ handleNumberCommaFormat(moneyInvested) } 원</p>
+                  <p className={styles.moneyInvested}>{ handleCommaFormat(moneyInvested) } 원</p>
                 </div>
                 <div className={styles.ctrlButton}>
                   <button
@@ -235,7 +221,7 @@ export default function Nav() {
               {error && <p className={styles.warning}>{error}</p>}
               <div className={styles.myMoneyInModal}>
                 <p>보유 금액</p>
-                <p className={styles.money}>{ handleNumberCommaFormat(myInfo.money) } 원</p>
+                <p className={styles.money}>{ handleCommaFormat(myInfo.money) } 원</p>
               </div>
               <div className={styles.inputWrapper}>
                 <input

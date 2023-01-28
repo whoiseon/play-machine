@@ -8,13 +8,14 @@ import Article from "components/blocks/Article";
 import useInput from "hooks/common/useInput";
 import ProductCard from "components/atoms/ProductCard";
 import {addProduct} from "features/product/productSlice";
-import EmptyText from "../../atoms/EmptyText";
+import EmptyText from "components/atoms/EmptyText";
+import handleCommaFormat from "hooks/utils/handleCommaFormat";
 
 export default function AdminPage() {
   const dispatch = useDispatch();
 
   const { myInfo } = useSelector((state) => state.user);
-  const { productList, history } = useSelector((state) => state.product);
+  const { productList } = useSelector((state) => state.product);
 
   const [productName, onChangeProductName, setProductName] = useInput("");
   const [productPrice, setProductPrice] = useState("0");
@@ -23,18 +24,14 @@ export default function AdminPage() {
 
   const [error, setError] = useState("");
 
-  const handleInputReset = useCallback(() => {
+  const handleInputReset = useCallback(() => { // input value 초기화 함수
     setProductName("");
     setProductPrice("0");
     setProductCount("");
     setProductCategory("일반음료");
   }, []);
 
-  const handlePriceRemoveComma = useCallback(() => {
-    return Number(productPrice.replaceAll(",", ""))
-  }, [productPrice]);
-
-  const onSubmitAddProduct = useCallback((event) => {
+  const onSubmitAddProduct = useCallback((event) => { // 상품 추가 함수
     event.preventDefault();
 
     const newHistoryObject = { // 구매 내역 객체
@@ -49,29 +46,29 @@ export default function AdminPage() {
         timestamp: moment().toISOString(),
       },
       productName: productName,
-      productPrice: handlePriceRemoveComma(),
-      purchase: handlePriceRemoveComma() * 0.4,
+      productPrice: handleCommaFormat(productPrice),
+      purchase: handleCommaFormat(productPrice) * 0.4,
       refill: 1,
-      margin: handlePriceRemoveComma() * 0.6
+      margin: handleCommaFormat(productPrice) * 0.6
     }
 
     const newProductObject = { // 상품 객체
       name: productName,
-      price: handlePriceRemoveComma(),
+      price: handleCommaFormat(productPrice),
       count: Number(productCount),
       initialCount: Number(productCount),
       category: productCategory,
       salesCount: 0,
       totalSales: 0,
-      cost: handlePriceRemoveComma() * 0.4,
-      margin: handlePriceRemoveComma() * 0.6,
+      cost: handleCommaFormat(productPrice) * 0.4,
+      margin: handleCommaFormat(productPrice) * 0.6,
       refill: 1,
       best: false,
       uploadDate: moment().toISOString()
     }
 
     // 수량, 가격 0 방지
-    if (handlePriceRemoveComma() < 100) {
+    if (handleCommaFormat(productPrice) < 100) {
       setError('가격은 100원 이상 입력해주세요!');
       return;
     }

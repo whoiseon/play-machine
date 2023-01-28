@@ -24,6 +24,10 @@
     margin-bottom: 100px;
     animation: ModalAnimation 0.5s ease;
 
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
     .header {
       display: flex;
       align-items: center;

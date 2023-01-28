@@ -1,12 +1,12 @@
 import {useCallback, useState} from "react";
 import Image from "next/image";
+import {useSelector} from "react-redux";
 
 import styles from "../Calculate/Calculate.module.scss";
-import {useSelector} from "react-redux";
 import moment from "moment";
 
-export default function CalculateTr({ data, rank, type }) {
-  const { history, productList } = useSelector((state) => state.product);
+export default function CalculateTr({ data, rank, type, getTotalCount }) {
+  const { history } = useSelector((state) => state.product);
 
   const [toggleHistory, setToggleHistory] = useState(false);
 
@@ -16,22 +16,6 @@ export default function CalculateTr({ data, rank, type }) {
 
   const getMyProductHistory = useCallback(() => {
     return history.filter((h) => h.buyer === data.name);
-  }, []);
-
-  const getTotalCount = useCallback((array, key, subKey = '') => { // 총 판매 금액을 계산하는 함수
-    let totalCount = 0;
-
-    if (subKey) {
-      array.map((a) => {
-        return totalCount += (a[key] * a[subKey])
-      })
-    } else {
-      array.map((a) => {
-        return totalCount += a[key]
-      })
-    }
-
-    return totalCount;
   }, []);
 
   return type === '이용자별'

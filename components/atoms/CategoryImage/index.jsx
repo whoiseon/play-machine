@@ -45,4 +45,4 @@ export default function CategoryImage({ category }) {
   }, [imageSize]);
 
   return categoryImageDetect(category)
-}
+};

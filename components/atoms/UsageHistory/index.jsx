@@ -1,6 +1,7 @@
 import styles from "./UsageHistory.module.scss";
-import CategoryImage from "../CategoryImage";
 import moment from "moment";
+
+import CategoryImage from "../CategoryImage";
 
 export default function UsageHistory({ data }) {
   return (

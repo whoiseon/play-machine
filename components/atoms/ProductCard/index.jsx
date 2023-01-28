@@ -16,7 +16,7 @@ export default function ProductCard({ data, alert, openAlert }) {
 
   const [removeButton, setRemoveButton] = useState(false);
 
-  const handleNumberCommaFormat = useCallback((number) => {
+  const handleNumberCommaFormat = useCallback((number) => { // number type 인자를 3번째 자릿 수 마다 콤마를 찍은 스트링으로 반환
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }, []);
 
@@ -24,22 +24,20 @@ export default function ProductCard({ data, alert, openAlert }) {
     setRemoveButton((prev) => !prev);
   }, []);
 
-  const handleRemoveProduct = useCallback( async () => {
+  const handleRemoveProduct = useCallback( async () => { // 상품 제거 디스패치 함수
     dispatch(removeProduct({
       productName: data.name,
       timestamp: data.uploadDate
     }));
   }, []);
 
-  const handleBuyProduct = useCallback(() => {
-    // 물건 구매 함수
-
+  const handleBuyProduct = useCallback(() => { // 물건 구매 함수
     if (moneyInvested < data.price) {
       openAlert();
       return;
     }
-    // Alert이 켜져있을시 동작 방지
-    if (alert) return;
+
+    if (alert) return; // Alert이 켜져있을시 동작 방지
 
     const newHistoryObject = { // 구매 내역 객체
       type: '판매',
@@ -56,7 +54,7 @@ export default function ProductCard({ data, alert, openAlert }) {
       sales: data.margin,
     }
 
-    // Redux dispatch
+    // 물건 구매 디스패치
     dispatch(buyProduct({
       name: data.name,
       price: data.price,
