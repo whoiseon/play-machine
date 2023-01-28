@@ -15,7 +15,6 @@ import userSlice from "./user/userSlice";
 import productSlice from "./product/productSlice";
 
 const isDev = process.env.NODE_ENV === 'development';
-const isLogger = isDev ? logger : null
 
 const persistConfig = {
   key: 'root',
@@ -38,7 +37,7 @@ const makeStore = () => {
         serializableCheck: {
           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
-      }).concat(logger)
+      }).concat()
     ),
     devTools: isDev,
   });
