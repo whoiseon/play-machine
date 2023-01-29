@@ -23,8 +23,6 @@ export default function Calculate({ handleSalesRestart }) {
 
   const onlyPurchaseProduct = history.filter((h) => h.type !== '구매');
 
-  console.log(onlyPurchaseProduct);
-
   const getHistoryTotalMoney = useCallback((type) => { // 인자로 매입, 매출, 순수익의 string 을 받아서 총 금액을 계산해주는 함수
     let totalMoney = 0;
 
